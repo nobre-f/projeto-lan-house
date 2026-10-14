@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -126,7 +127,7 @@ public class Main {
                     aguardarEnter(scanner);
                     break;
 
-                case 3:
+                                    case 3:
                     System.out.println("===== CADASTRAR SETOR =====");
                     System.out.print("Nome do setor: ");
                     String nomeSetor = scanner.nextLine();
@@ -141,36 +142,73 @@ public class Main {
                     int codigoEquipe = scanner.nextInt();
                     scanner.nextLine();
 
-                    System.out.print("Tipo da plataforma: ");
+                    System.out.print("Tipo da plataforma (Ex: PC, PlayStation, Xbox): ");
                     String tipoPlataforma = scanner.nextLine();
 
-                    System.out.print("Versão da plataforma: ");
-                    String versaoPlataforma = scanner.nextLine();
+                    Plataforma plataformaDefinitiva = null;
 
-                    System.out.print("Preço por hora: R$ ");
-                    int precoHora = scanner.nextInt();
-                    scanner.nextLine();
+                    // VERIFICAÇÃO INTELIGENTE: Se for PC ou Notebook, libera o Catálogo Online!
+                    if (tipoPlataforma.equalsIgnoreCase("PC") || tipoPlataforma.equalsIgnoreCase("notebook")) {
+                        System.out.println("\n[SISTEMA] Tipo '" + tipoPlataforma + "' detectado. Liberando Catálogo Online do Google Sheets...");
+                        System.out.println("1 - Escolher modelo do Catálogo Online");
+                        System.out.println("2 - Digitar o modelo manualmente");
+                        System.out.print("Escolha uma opção: ");
+                        int modoCarga = scanner.nextInt();
+                        scanner.nextLine();
 
-                    if (precoHora <= 0) {
-                        System.out.println("O preço por hora deve ser maior que zero.");
-                        aguardarEnter(scanner);
-                        break;
+                        if (modoCarga == 1) {
+                            System.out.println("\nBuscando modelos disponíveis na nuvem...");
+                            ArrayList<Plataforma> opcoesCatalogo = ControleDeCarga.obterCatalogoPlanilha();
+
+                            if (opcoesCatalogo.isEmpty()) {
+                                System.out.println("Não foi possível conectar à API. Redirecionando para o modo manual...");
+                            } else {
+                                System.out.println("\n--- Modelos de Notebooks Encontrados na Planilha ---");
+                                for (int k = 0; k < opcoesCatalogo.size(); k++) {
+                                    Plataforma pItem = opcoesCatalogo.get(k);
+                                    System.out.printf("%d - %s | Modelo: %s (Preço sugerido: R$ %.2f/h)%n", 
+                                        (k + 1), 
+                                        pItem.getTipoplataforma(), 
+                                        pItem.getVersaoPlataforma(),
+                                        pItem.getPrecoPorHora());
+                                }
+                                System.out.print("\nSelecione o número do modelo para importar: ");
+                                int escolhaModelo = scanner.nextInt();
+                                scanner.nextLine();
+
+                                if (escolhaModelo > 0 && escolhaModelo <= opcoesCatalogo.size()) {
+                                    plataformaDefinitiva = opcoesCatalogo.get(escolhaModelo - 1);
+                                    // Sobrescreve o tipo genérico "PC" pelo nome detalhado da marca vindo da API
+                                    tipoPlataforma = plataformaDefinitiva.getTipoplataforma(); 
+                                    System.out.println("\nPlataforma importada com sucesso!");
+                                } else {
+                                    System.out.println("Opção inválida. Prosseguindo com cadastro manual...");
+                                }
+                            }
+                        }
                     }
 
+                    // Se NÃO for PC/Notebook (ou se o usuário escolheu preencher manualmente)
+                    if (plataformaDefinitiva == null) {
+                        System.out.print("Versão/Modelo da plataforma (Ex: PS5, Series X): ");
+                        String versaoPlataforma = scanner.nextLine();
+
+                        System.out.print("Preço por hora: R$ ");
+                        int precoHora = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (precoHora <= 0) {
+                            System.out.println("O preço por hora deve ser maior que zero.");
+                            aguardarEnter(scanner);
+                            break;
+                        }
+
+                        plataformaDefinitiva = new Plataforma(tipoPlataforma, versaoPlataforma, precoHora);
+                    }
+
+                    // Cria e adiciona o setor utilizando a sua estrutura original de POO
                     Equipe novaEquipe = new Equipe(codigoEquipe);
-
-                    Plataforma novaPlataforma = new Plataforma(
-                            tipoPlataforma,
-                            versaoPlataforma,
-                            precoHora
-                    );
-
-                    Setor novoSetor = new Setor(
-                            nomeSetor,
-                            novaEquipe,
-                            novaPlataforma
-                    );
-
+                    Setor novoSetor = new Setor(nomeSetor, novaEquipe, plataformaDefinitiva);
                     lanHouse.addSetor(novoSetor);
 
                     System.out.println("Setor cadastrado com sucesso.");
