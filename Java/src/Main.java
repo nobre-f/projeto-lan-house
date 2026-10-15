@@ -127,7 +127,7 @@ public class Main {
                     aguardarEnter(scanner);
                     break;
 
-                                    case 3:
+                case 3:
                     System.out.println("===== CADASTRAR SETOR =====");
                     System.out.print("Nome do setor: ");
                     String nomeSetor = scanner.nextLine();

@@ -105,7 +105,7 @@ public class Setor {
     public int totalDeHorasReservadas(){
         int total = 0;
         for (int i = 0; i < clientes.size(); i++) {
-            total = clientes.get(i).getQuantHorasReservadas();
+            total += clientes.get(i).getQuantHorasReservadas();
         }
         return total;
     }
