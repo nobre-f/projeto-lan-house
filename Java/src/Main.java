@@ -685,7 +685,7 @@ public class Main {
                     );
 
                     System.out.printf(
-                            "Preço por hora: R$ %d%n",
+                            "Preço por hora: R$ %.2f%n",
                             setorFaturamento.getPlataforma().getPrecoPorHora()
                     );
 
