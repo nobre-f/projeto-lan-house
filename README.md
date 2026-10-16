@@ -104,7 +104,7 @@ lanhouse/
 
 ### 1. Executando o Sistema (Menu Interativo)
 1. No VS Code, abra o arquivo `src/Main.java`.
-2. Clique no botão de **Run** (Tecla F3 ou no ícone de ▶️ Play no canto superior direito do editor) ou clique no atalho **Run** exibido logo acima do método `public static void main(String[] args)`.
+2. Clique no botão de **Run** (Tecla F5 ou no ícone de ▶️ Play no canto superior direito do editor) ou clique no atalho **Run** exibido logo acima do método `public static void main(String[] args)`.
 3. O terminal integrado do VS Code abrirá automaticamente e você poderá navegar interativamente por todas as 24 funcionalidades do sistema.
 
 ### 2. Executando os Testes Unitários (JUnit 5)
